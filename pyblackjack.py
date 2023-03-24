@@ -1,12 +1,15 @@
 import os
 import random
 import time
+from constants import SUITS, RANK
 
 class Deck:
+    """
+    Class that creates the Playing Card Deck
+    """
+
     def __init__(self):
         self.card_obj = {}
-        self.suits = ["Heart", "Diamond", "Club", "Spade"]
-        self.card_value = ["A" ,"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
         self.player_hand = []
         self.dealer_hand = []
         self.wager = ""
@@ -17,11 +20,11 @@ class Deck:
     def build_deck(self):
         # print("Building Deck")
         deck = []
-        for i in self.suits:
-            for j in self.card_value:
+        for i in SUITS:
+            for j in RANK:
                 deck.append({"suit": i, "value": j})
         return deck
-        
+
     def shuffle_deck(self, deck):
         """
         Fisher-Yates Shuffle algorithm
@@ -34,6 +37,9 @@ class Deck:
         return deck
 
     def deal(self):
+        """
+        Deals initial 4 cards and assigns them to the player and dealer hands
+        """
         self.deal_deck = self.shuffle_deck(self.deck.copy())
         # print(f"DEALER DECK {len(self.deal_deck)}")
         # print(f"MASTER DECK {len(self.deck)}")
@@ -51,7 +57,7 @@ class Deck:
                 print("Your Hand: ", self.player_hand)
                 print("Dealer Is Showing: ", self.dealer_hand[1])
                 return self.player_hand, self.dealer_hand
-    
+
 class GameOptions(Deck):
     def __init__(self):
         super().__init__()
@@ -65,7 +71,7 @@ class GameOptions(Deck):
         self.double_down = False
         self.decision = "False"
         self.player_options = ["HIT", "STAY", "SPLIT", "DD"]
-    
+
     def available_options(self):
         # self.player_hand_value = self.score_check()
         if len(self.player_hand) > 2:
@@ -93,7 +99,7 @@ class GameOptions(Deck):
             self.ace_count -= 1
         self.ace_count = 0
         return player_value
-        
+
     def end_game(self, winner):
         if winner == "player":
             print("YOU WIN!")
@@ -116,7 +122,6 @@ class GameOptions(Deck):
         else:
             return "Game Over"
 
-
     def score_check(self):
         score = []
         for card in self.player_hand:
@@ -133,7 +138,6 @@ class GameOptions(Deck):
         else:
             self.player_hand_value = new_score
 
-            
     def check_split(self):
         if self.player_hand[0]["value"] == self.player_hand[1]["value"]:
             self.split = True
@@ -144,7 +148,7 @@ class GameOptions(Deck):
                 if option == "SPLIT":
                     self.player_options.remove(option)
                     # print(self.player_options)
-    
+
     def check_double_down(self):
         if len(self.player_hand) == 2: # add logic for split for double hands
             self.double_down = True
@@ -154,7 +158,7 @@ class GameOptions(Deck):
                 if option == "DD":
                     self.player_options.remove(option)
                     print(self.player_options)
-    
+
     def player_double_down(self):
         self.wager += self.wager
         print(f"NOW WAGERING: ${self.wager}")
@@ -177,7 +181,7 @@ class GameOptions(Deck):
             self.end_game(winner="player")
         else:
             print("FIGURE IT OUT DAN")
-        
+
 
     def dealer_score_check(self):
         print(self.dealer_hand)
@@ -243,7 +247,7 @@ class GameOptions(Deck):
             return self.player_stay()
         if decision.upper() == "DD":
             return self.player_double_down()
-    
+
     def wager_validation(self, input):
         try:
             wager = float(input)
@@ -256,28 +260,23 @@ class GameOptions(Deck):
         except:
             return False
 
-
-
     def set_wager(self):
         decision = ""
         while decision == "":
-            decision = input(f"What's Your Wager?\n")
+            decision = input("What's Your Wager?\n")
             wager_eval = self.wager_validation(decision)
-            if wager_eval != False:
+            if wager_eval is not False:
                 break
-            else:
-                decision = ""
         print(type(wager_eval))
         self.wager = wager_eval
 
-
-
-
 def start_new_game():
-
+    """
+    Starts a new game
+    """
     # deck_client = Deck()
     game_client = GameOptions()
-    print(f"Great! Let's Begin...\n")
+    print("Great! Let's Begin...\n")
     time.sleep(2)
     print(f"You have ${game_client.bank} in the bank\n")
     # deck_client.deal()
@@ -286,6 +285,9 @@ def start_new_game():
     game_client.available_options()
 
 def game_runner():
+    """
+    Asks User Input to begin game
+    """
     choice = ""
     while choice.upper() not in ["Y", "N"]:
         choice = input("Hi User! Would You Like To Play BlackJack?: [Y, N]\n")
@@ -299,7 +301,4 @@ def game_runner():
 
 if __name__ == "__main__":
     game_runner()
-
-
-
-
+    
